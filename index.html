@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+<style>
+
+body {
+  font: 400 100px/1.3 'Oleo Script', Helvetica, sans-serif;
+  font-size: 20px;
+
+}
+  
+ 
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.9;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+  
+circle.surbrillance {
+  stroke: black;
+  stroke-width: 5px;
+ }
+  
+  circle.retrait{
+    color: grey;
+    opacity: 0.4
+  }
+
+  
+  .hidden {
+        display: none;
+    }
+    div.tooltip {
+        color: #007acc;
+        background: rgba(200, 200, 200, 0.8);
+        line-height: 1;
+        padding: 6px;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 2px;
+        opacity: 0.9;
+        position: absolute;
+    }
+ 
+  
+</style>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="fic.css" />
+      
+    <script>
+      
+window.onload = function(){
+    var motsClefs = ["t.A.T.u.","Lady Gaga","Britney Spears","Madonna","Katy Perry","Rihanna","Avril Lavigne","Christina Aguilera","Beyonce","Shakira","Ke$ha","P!nk","blink-182","Paramore","Green Day","a-ha","Depeche Mode","Duran Duran","Pet Shop Boys","The Cure","Yeah Yeah Yeahs","Radiohead","The Killers","Arctic Monkeys","The Beatles","Muse","Franz Ferdinand","Yann Tiersen","Within Temptation","Evanescence","Nightwish","Weezer","Vanessa Hudgens","Miley Cyrus","Ashley Tisdale","Kelly Clarkson","Hilary Duff","The Pussycat Dolls","Black Eyed Peas","Mariah Carey","Taylor Swift","Kylie Minogue","Selena Gomez & the Scene","Jennifer Lopez","Ashlee Simpson","Lindsay Lohan","Demi Lovato","Vampire Weekend","Kings of Leon","MGMT","Coldplay","Usher","Chris Brown","Michael Jackson","U2","Travis","Oasis","Tool","Metallica","Timbaland","David Guetta","Justin Timberlake","Three Days Grace","Linkin Park","Breaking Benjamin","30 Seconds to Mars","The xx","The Who","Led Zeppelin","Pink Floyd","The Rolling Stones","The Doors","AC/DC","The White Stripes","The Strokes","The Veronicas","The Velvet Underground","Joy Division","David Bowie","The Used","My Chemical Romance","The Ting Tings","Lily Allen","The Smiths","The Smashing Pumpkins","The Saturdays","Cheryl Cole","Sugababes","Leona Lewis","Glee Cast","Girls Aloud","Queen","The Prodigy","The Pretty Reckless","The Police","The Offspring","Nirvana","The Libertines","The Kooks","Babyshambles","The Fray","The Cranberries","The Clash","The All-American Rejects","Taio Cruz","Adam Lambert","Enrique Iglesias","Eminem","T.I.","Kanye West","Sum 41","Nelly Furtado","Sufjan Stevens","Death Cab for Cutie","Arcade Fire","Spice Girls","Backstreet Boys","Sophie Ellis-Bextor","Sonic Youth","Snow Patrol","Slipknot","System of a Down","Slayer","Iron Maiden","Megadeth","Black Sabbath","Motorhead","Judas Priest","Simple Plan","Sigur Ros","Scorpions","Guns N' Roses","Royksopp","Robyn","Robbie Williams","Rise Against","Regina Spektor","Red Hot Chili Peppers","Ramones","Rage Against the Machine","RBD","Anahi","R.E.M.","Queens of the Stone Age","Portishead","Bjork","Porcupine Tree","Opeth","Placebo","Pixies","Pixie Lott","Pitty","Phoenix","Erasure","Pearl Jam","Papa Roach","Pantera","Panic! At the Disco","Fall Out Boy","Ozzy Osbourne","KISS","Deep Purple","Owl City","Dream Theater","OneRepublic","No Doubt","Gwen Stefani","Nine Inch Nails","Nicole Scherzinger","Nicki Minaj","Nickelback","New Order","Natasha Bedingfield","Morrissey","Modest Mouse","Moby","Mika","McFly","3OH!3","Massive Attack","Maroon 5","Marina & the Diamonds","Florence + the Machine","Ellie Goulding","M.I.A.","Los Hermanos","Little Boots","Lifehouse","Alicia Keys","Leighton Meester","Legiao Urbana","La Roux","Korn","Klaxons","Kerli","Keri Hilson","Ciara","Kelly Rowland","Destiny's Child","Keane","Kate Nash","Kasabian","Kaiser Chiefs","Justin Bieber","Jordin Sparks","Jonas Brothers","Johnny Cash","John Lennon","Bob Dylan","JoJo","Jimi Hendrix","Jessie J","Jessica Simpson","Jay-Z","Jason Mraz","Janet Jackson","James Blunt","Jack Johnson","Interpol","Incubus","In Flames","IAMX","Hurts","Gorillaz","Good Charlotte","Goldfrapp","Garbage","Fresno","Foo Fighters","Flyleaf","Fergie","Feist","Explosions in the Sky","Mogwai","Escape The Fate","Avenged Sevenfold","A Day to Remember","Bullet for My Valentine","Elvis Presley","Elliott Smith","Duffy","Adele","Disturbed","Dido","Deftones","Dave Gahan","Martin L. Gore","Celine Dion","Cyndi Lauper","Crystal Castles","Creedence Clearwater Revival","Colbie Caillat","Cobra Starship","Cat Power","Cascada","Carrie Underwood","Cansei de Ser Sexy","Bruno Mars","Bring Me The Horizon","Boys Like Girls","Bon Jovi","Boards of Canada","Aphex Twin","BoA","Blur","Bloc Party","Belle and Sebastian","Belinda","Beirut","Beck","Bat for Lashes","B.o.B","Amy Winehouse","All Time Low","Alice in Chains","Alanis Morissette","Air","Aerosmith","ABBA","A Perfect Circle"]
+     
+    var form = document.getElementById("auto-suggest");
+    var input = form.search;
+     
+    var list = document.createElement("ul");
+
+    list.className = "suggestions";
+    list.style.display = "none";
+
+    form.appendChild(list);
+ 
+    input.onkeyup = function(){
+        var txt = this.value;
+        if(!txt){
+            list.style.display = "none";
+            return;
+        }
+         
+        var suggestions = 0;
+        var frag = document.createDocumentFragment();
+         
+        for(var i = 0, c = motsClefs.length; i < c; i++){
+            if(new RegExp("^"+txt,"i").test(motsClefs[i])){
+                var word = document.createElement("li");
+                frag.appendChild(word);
+                word.innerHTML = motsClefs[i].replace(new RegExp("^("+txt+")","i"),"<strong>$1</strong>");
+                word.mot = motsClefs[i];
+                word.onmousedown = function(){                 
+                    input.focus();
+                    input.value = this.mot;
+                    list.style.display = "none";
+                    return false;
+                };
+              if (suggestions<1){
+                suggestions++;
+              }
+               else{break;} 
+            }
+        }
+ 
+        if(suggestions){
+            list.innerHTML = "";
+            list.appendChild(frag);
+            list.style.display = "block";
+        }
+        else {
+            list.style.display = "none";           
+        }
+    };
+ 
+    input.onblur = function(){
+        list.style.display = "none";
+        if(this.value=="")
+            this.value = "Rechercher un artiste ...";
+    };
+};
+                        
+      
+ </script>
+        </head>
+  
+        <body>
+          <div id="searchbar">
+            
+          <form id="auto-suggest" action="#" method="post">
+          <input type="text" class="search" name="search" value="Rechercher un artiste ..." onfocus="if(this.value=='Rechercher un artiste ...')this.value=''" onblur="if(this.value=='')this.value='Rechercher un artiste ...'" autocomplete="off" id="myVal"/>
+          </form>
+            
+          </div>
+        </body>
+
+  
+</html>
+
+
+<svg></svg> 
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+ 
+var width=screen.width;
+var height=800;
+var svg = d3.select("svg");
+var container2 = svg.append('g').attr("id","containerLegend");
+var container1=svg.append('g').attr("id","containerGraphe");
+var container3=svg.append('g').attr("id","containerZoom");
+
+
+var tooltip = d3.select('body').append('div')
+    .attr('class', 'hidden tooltip');
+ 
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+ 
+ svg.call(d3.zoom()
+                  .scaleExtent([1 / 2, 8])
+                  .on("zoom", zoomed));
+
+  function zoomed() {
+    container1.attr("transform", d3.event.transform);
+  }
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.artist; }))
+    .force("charge", d3.forceManyBody().distanceMax(150))
+    .force("center", d3.forceCenter(500,300));
+
+
+d3.csv("recommandations.csv", function(data){
+  
+  
+    var links = [];
+    var nodes = new Set();
+    for (var i=0; i< data.length; i++){
+      links.push({source: data[i].Antecedant, target: data[i].Consequence, value: parseFloat(data[i].ItemSetSupport)});
+      nodes.add(data[i].Antecedant);
+      nodes.add(data[i].Consequence);
+    }
+  
+  var nodesArray = Array.from(nodes).map(function(e){return {artist: e}});
+ 
+  d3.csv("artists_tags_count.csv", function(data2){
+    for (var i=0; i< nodesArray.length; i++){
+      for (var j=0; j<data2.length;j++){
+        if (nodesArray[i].artist == data2[j].name){
+          nodesArray [i].url = data2[j].pictureurl;
+          nodesArray[i].tags = top5tags(data2[j].tags);
+          nodesArray[i].count = data2[j].count;
+          break;
+        }
+      } 
+    }
+    
+
+        
+   //on va selectionner les top 5 tags
+   function top5tags(tags){
+     top5 =[];
+     n = tags.split(";").length;
+     t = tags.split(";");
+     top5.push(t[0].split("[")[1]); //premier tag (sans le crochet)
+     if (n<5){
+       for (var i=1; i<n-1; i++){
+         top5.push(t[i])
+       }
+       top5.push(t[n-1].split("]")[0])
+     }
+     else {
+       for (var i=1; i<5; i++){
+         top5.push(t[i])
+      }
+     }
+     
+    return top5
+   }
+   
+  function listerecommandations(data,node){ //data: recommandations, nous allons recommander 5 artistes.
+      n=5;
+      recommandations=new Set();
+      ant = false;
+      //si le noeud est dans la colonne antecedant:
+      for (var i=0; i<data.length; i++){
+        
+        if (data[i].Antecedant == node.artist){
+          //combien de consequences a-t-il? plus ou moins de 5
+          ant = true;
+          j=i;
+          while (j<data.length && data[j].Antecedant==node.artist && recommandations.size<n){
+            recommandations.add(data[j].Consequence);
+            j=j+1;
+          }
+         
+          //si 5 ou + conséquences
+          if (recommandations.size == n){
+            return recommandations;
+          }
+          
+          else{
+            ind = 0;
+				while (ind < recommandations.size && recommandations.size < n){
+					for (var k=0; k< data.length; k++){
+						if (data[k].Consequence== Array.from(recommandations)[ind] && data[k].Antecedant != node.artist && recommandations.size < n){
+							recommandations.add(data[k].Antecedant)
+						}
+					}
+					ind = ind+1;
+				}
+					
+				}
+         
+			//si aucun artiste suggéré n'est présent dans la colonne Antecedant,(ou pas assez) on va aller voir dans la colonne consequence
+		  	if (recommandations.size < n){
+			   //sinon aller voir les recommandations du 1 er artiste de la liste, puis du 2e etc et récursivement
+            ind = 0;
+            while (ind < recommandations.size && recommandations.size < n){
+              for (var k=0; k<data.length; k++){
+                if (data[k].Antecedant == Array.from(recommandations)[ind]){
+                  l=k;
+                  while(recommandations.size<n && data[l].Antecedant == Array.from(recommandations)[ind]){
+					if (data[l].Consequence != node.artist){ 
+						recommandations.add(data[l].Consequence);
+					}
+					l=l+1;
+                  }
+                  break;
+                }
+              }
+              ind = ind +1;
+            }
+			} break;
+          }
+		  // ça devrait suffire
+          
+        }
+      
+      //si le noeud n'est compris que dans la colonne consequence
+	  if (ant == false){
+		  for (var i=0; i< data.length; i++){
+			  //on ajoute tous les antécédents
+			  if (data[i].Consequence == node.artist){
+				  recommandations.add(data[i].Antecedant)
+			  }
+		  }
+		  
+	// s'il n'y a pas assez d'antécédents
+      if (recommandations.size<n){
+		//on regarde si les antécédents ont des conséquences
+		ind = 0;
+            while (ind < recommandations.size && recommandations.size < n){
+              for (var k=0; k<data.length; k++){
+                if (data[k].Antecedant == Array.from(recommandations)[ind]){
+                  l=k;
+                  while(l<data.length && recommandations.size<n && data[l].Antecedant == Array.from(recommandations)[ind]){
+					if (data[l].Consequence != node.artist){ 
+						recommandations.add(data[l].Consequence);
+					}
+					l=l+1;
+                  }
+                  break;
+                }
+              }
+              ind = ind + 1;
+            }
+	  }
+
+	// s'il n'y a toujours pas assez de recommandations, on regarde tous les antécédents
+	if (recommandations.size < n){
+		ind = 0;
+			while (ind < recommandations.size && recommandations.size < n){
+					for (var k=0; k< data.length; k++){
+						if (data[k].Consequence== recommandations[ind] && data[k].Antecedant != node.artist && recommandations.size<n){
+							recommandations.add(data[k].Antecedant)
+						}
+					}
+					ind = ind+1;
+			}
+	}
+
+	  
+	  }
+
+      return recommandations;
+    }
+  
+       
+  
+ for (var i=0; i< nodesArray.length; i++){
+   nodesArray[i].rec = Array.from(listerecommandations(data,nodesArray[i]))
+ }
+    
+    
+      d3.select("#myVal").on("input", function() {
+  update(this.value);
+});
+  function update(val) {
+    affichageselect(val)
+  }
+   
+    function affichageselect(artist){
+      for (var i=0; i<nodesArray.length; i++){
+        if(nodesArray[i].artist.toLowerCase() == artist.toLowerCase()){
+          clearsvg()
+          affichageRecommandations(nodesArray[i], nodesArray)
+          break;
+        }
+      }
+    }
+    
+    function affichageRecommandations(node, nodesArray){
+    simulation
+     		.force("charge", d3.forceManyBody().distanceMax(150))
+       	.force("center", d3.forceCenter(500,300)) 
+
+    var texte0 = container3.append("text")
+    		.text("Votre selection : ")
+    		.attr('x',750)
+    		.attr('y',30)
+    		.attr("font-size", "25px");
+      
+    var rectangle1 = container3.append("rect")
+       	.attr("width", 180)
+       	.attr("height",150)
+       	.style("stroke", "orange")
+    		.style("stroke-width", "5px")
+       	.style("fill", "none")
+        .attr("x", 900)
+        .attr("y",40); 
+    
+    var texte1 = container3.append("text")
+        .text(node.artist)
+        .attr("x", 905)
+        .attr("y",58)
+        .style("fill", "orange")
+    		.style("font-size", "20px");
+      
+    var texte2 = container3.append("text")
+        .text("Tags : "+ node.tags[0]+  ", " + node.tags[1])
+        .attr("x", 905)
+        .attr("y",180)
+    		.style("font-size", "15px");
+  
+    container3.append("svg:image")
+   			.attr('x',930)
+        .attr('y',65)
+    		.attr('width',120)
+        .attr("xlink:href",node.url)
+    		.attr("height",100)
+   
+    var selection = container3.selectAll("rect")
+    		.data(nodesArray)
+   
+    var texte3 = container3.append("text")
+    		.text("Nos recommandations : ")
+    		.attr('x',750)
+    		.attr('y',230)
+    		.attr("font-size", "25px");
+    
+    for (var i=0; i<node.rec.length;i++){
+        for (var j=0; j< nodesArray.length; j++){ 
+            if (node.rec[i] == nodesArray[j].artist){
+               if (i<3){
+
+                   var texte1 = container3.append("text")
+                      .text(nodesArray[j].artist)
+                      .attr("x", 805+150*i)
+                      .attr("y",270)
+                      .style("fill", "steelblue")
+                   		.style("font-size", "20px");
+
+                   var texte2 = container3.append("text")
+                      .text("Tag : "+nodesArray[j].tags[0] )
+                      .attr("x", 800+150*i)
+                      .attr("y",375)
+                   		.style("font-size", "15px");
+
+                   container3.append("svg:image")
+                       .attr('x',805+150*i)
+                       .attr('y',275)
+                       .attr("height",80)
+                   		 .attr('width',100)
+                       .attr("xlink:href",nodesArray[j].url)
+               } 
+
+               else{
+
+                   var texte1 = container3.append("text")
+                       .text(nodesArray[j].artist)
+                       .attr("x", 855+170*(i-3))
+                       .attr("y",420)
+                       .style("fill", "steelblue")
+                   		 .style("font-size", "20px");
+
+                   var texte2 = container3.append("text")
+                       .text("Tag : "+nodesArray[j].tags[0] )
+                       .attr("x", 855+170*(i-3))
+                       .attr("y",525)
+                   		 .style("font-size", "15px");
+
+                   container3.append("svg:image")
+                       .attr('x',855+170*(i-3))
+                       .attr('y',425)
+                       .attr('height',80)
+                       .attr('width',100)
+                       .attr("xlink:href",nodesArray[j].url)
+              }
+
+              break;
+            }
+        }   
+    }
+}
+    
+    //affichageRecommandations(nodesArray[199], nodesArray)
+    function clearsvg(){
+      container3.selectAll("*").remove();
+    }
+  
+    var texte6 = container2.append("text")
+    		.text("Cliquez sur un artiste pour")
+    		.attr('x',350)
+    		.attr('y',30)
+    		.attr("font-size", "25px");
+    
+    var texte7 = container2.append("text")
+    		.text("avoir des recommandations :")
+    		.attr('x',350)
+    		.attr('y',60)
+    		.attr("font-size", "25px");
+    
+    var link = container1.append("g")
+    .attr("class", "links")
+    .selectAll("line")
+    .data(links)
+    .enter().append("line")
+    .attr("stroke", "black");
+  
+  
+  
+  var node = container1.append("g")
+    .attr("class", "nodes")
+    .selectAll("circle")
+    .data(nodesArray)
+    .enter().append("circle")
+    .attr("id", function(d){return "node" + d.artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+","");})
+      .attr("r", function(d) {return Math.sqrt(d.count);})
+      .attr("fill", function(d) { return color(d.tags[0]); })
+  	
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended))
+					.on("click",function(d){
+
+								d3.select(this)
+                .attr("class", "surbrillance")
+                for (var j=0; j<nodesArray.length; j++){
+                  if (nodesArray[j].artist != d.artist){
+                    svg.selectAll("#node" + nodesArray[j].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "retrait");
+                  }
+                }
+            
+                for (var i=0; i<d.rec.length; i++){
+                  for (var j=0; j<nodesArray.length; j++){
+                    if (d.rec[i] == nodesArray[j].artist){
+                     svg.selectAll("#node" + nodesArray[j].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "surbrillance");
+                      
+                    }
+                  }
+                  legende0.style("font-size","20px")
+                  legende1.style("font-size","20px")
+                  legende2.style("font-size","20px")
+                  legende3.style("font-size","20px")
+                  legende4.style("font-size","20px")
+                  legende5.style("font-size","20px")
+                  legende6.style("font-size","20px")
+									legende7.style("font-size","20px") 
+                  legende8.style("font-size","20px")
+                }   
+            clearsvg() 
+            affichageRecommandations(d,nodesArray);
+          })
+  				.on('mousemove', function(d) {
+                    var mouse = d3.mouse(svg.node()).map(function(d) {
+                        return parseInt(d);
+                    })        						
+          			
+                    tooltip.classed('hidden', false)
+                        .attr('style', 'left:' + (mouse[0] + 15) +
+                                'px; top:' + (mouse[1] - 35) + 'px')
+                    
+                                  
+                               .html(d.artist+"<br/>"+"<img src="+ d.url+" height="+110+"/>"+"<br/>"+d.tags[0])
+                    d3.select(this).style("cursor","pointer");
+                  
+                    //.html(d.artist+"<br/>"+d.tags);
+            //.html("<strong>"+d.artist+"</strong> <br/>"+"<span style='color:black'>"+d.tags + "</span>");
+                })
+                .on('mouseout', function() {
+                 
+  
+                    tooltip.classed('hidden', true)
+                    
+                    
+                }); 
+    
+ 
+ function contains(liste, e){
+     for (var i=0; i< liste.length; i++){
+     if (liste[i] == e){
+       return true
+     }
+   }
+   return false;
+ }
+    
+    
+ 		var Pop = ["Avril Lavigne","Lady Gaga", "Katy Perry", "Jennifer Lopez", "Adam Lambert"]
+    var Rock = ["Paramore", "Linkin Park", "My Chemical Romance", "Evanescence", "Red Hot Chili Peppers"]
+    var Metal = ["System of a Down", "Metallica", "Slipknot", "Korn", "Avenged Sevenfold"]
+    var Indie = ["The Killers", "Arctic Monkeys", "The Strokes", "The Libertines","Florence + the Machine"]
+    var ClassicRock = ["The Beatles", "Pink Floyd", "Queen", "Led Zeppelin", "The Doors"]
+    var Alternative = ["Muse", "Radiohead", "Coldplay", "Placebo", "30 Seconds to Mars"]
+    var RapRnb = ["Beyonce", "Mariah Carey", "Rihanna", "Eminem", "Ciara"]
+    var All = ["Coldplay", "Keane", "Taylor Swift", "Blur", "Iron Maiden"]
+    var HipHop = ["Black Eyed Peas", "Jay-Z", "Nicki Minaj", "Kanye West" ,"T.I."]
+    
+    
+	// draw legend
+  
+   var texte4 = container2.append("text")
+    		.text("Choisissez les artistes")
+    		.attr('x',50)
+    		.attr('y',30)
+    		.attr("font-size", "25px");
+    
+   var texte5 = container2.append("text")
+  			.text("par genre : ")
+    		.attr('x',50)
+    		.attr('y',60)
+    		.attr("font-size", "25px");
+    
+  tablegend = ["ALL", "POP", "ROCK", "METAL", "INDIE", "RAP & R'N'B"];
+  
+  var legende0 = container2.append("text")
+  .text("ALL")
+  .attr("x", 50)
+  .attr("y",130)
+  .attr("fill", "Black")
+  .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+  .on("click",function(){
+      d3.select(this).style("font-size","40px").attr("y",135)
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre2("all")
+      clearsvg()
+      affichageTop5(All, "des artistes")
+      // afficherTop5
+    });
+ 
+  var legende1 = container2.append("text")
+  	.text("POP")
+  	.attr("x", 50)
+  	.attr("y",170)
+    .attr("fill", "Blue")
+  	.on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",175)
+      legende0.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("pop")
+      clearsvg()
+      affichageTop5(Pop, " \"Pop\" ")
+      // afficherTop5
+    });
+    
+    var legende2 = container2.append("text")
+  	.text("ROCK")
+  	.attr("x", 50)
+  	.attr("y",210)
+    .attr("fill", "Orange")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",215)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("rock")
+      clearsvg()
+      affichageTop5(Rock, " \"Rock\" ")
+      // afficherTop5
+    });
+    
+    var legende3= container2.append("text")
+  	.text("METAL")
+  	.attr("x", 50)
+  	.attr("y",250)
+    .attr("fill", "LimeGreen")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",255)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("metal")
+      clearsvg()
+      affichageTop5(Metal, " \"Metal\" ")
+      // afficherTop5
+    });
+    
+    var legende4= container2.append("text")
+  	.text("INDIE")
+  	.attr("x", 50)
+  	.attr("y",290)
+    .attr("fill", "Salmon ")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",295)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("indie")
+      clearsvg()
+      affichageTop5(Indie, " \"Indie\"")
+    });
+    
+    
+    
+    var legende5 = container2.append("text")
+  	.text("CLASSIC ROCK")
+  	.attr("x", 50)
+  	.attr("y",330)
+    .attr("fill", "Plum")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",335)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("classic rock")
+      clearsvg()
+      affichageTop5(ClassicRock, " \"Classic Rock\"")
+      // afficherTop5
+    });
+    
+    var legende6= container2.append("text")
+  	.text("ALTERNATIVE")
+  	.attr("x", 50)
+  	.attr("y",370)
+    .attr("fill", "MediumPurple")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",375)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende7.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre("alternative")
+      clearsvg()
+      affichageTop5(Alternative, " \"Alternative\" ")
+      // afficherTop5
+    });
+    
+    var legende7= container2.append("text")
+  	.text("RAP & R'N'B")
+  	.attr("x", 50)
+  	.attr("y",410)
+    .attr("fill", "LightSkyBlue")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",415)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende8.style("font-size","20px")
+      selectiongenre3("rap","rnb")
+      clearsvg()
+      affichageTop5(RapRnb, " \"Rap & R'n'B\" ")
+      // afficherTop5
+    });
+
+    
+    var legende8= container2.append("text")
+  	.text("HIP-HOP")
+  	.attr("x", 50)
+  	.attr("y",450)
+    .attr("fill", "Fuchsia ")
+    .on("mousemove", function(){
+      d3.select(this).style("cursor","pointer")
+    })
+    .on("click",function(){
+			d3.select(this).style("font-size","40px").attr("y",455)
+      legende0.style("font-size","20px")
+      legende1.style("font-size","20px")
+      legende2.style("font-size","20px")
+      legende3.style("font-size","20px")
+      legende4.style("font-size","20px")
+      legende5.style("font-size","20px")
+      legende6.style("font-size","20px")
+      legende7.style("font-size","20px")
+      selectiongenre3("hip-hop","hip hop")
+      clearsvg()
+      affichageTop5(HipHop, " \"Hip-Hop\" ")
+      // afficherTop5
+    });
+ 
+    
+    
+   function selectiongenre(texte){
+     
+   
+     for (var i=0; i< nodesArray.length; i++){
+       if (contains(nodesArray[i].tags, texte)){
+         d3.selectAll("#node"+nodesArray[i].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "surbrillance")
+       }
+       else{
+         d3.selectAll("#node"+nodesArray[i].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "retrait")
+       }
+     }
+   }
+    
+    function selectiongenre2(texte){
+     for (var i=0; i< nodesArray.length; i++){
+       d3.selectAll("#node"+nodesArray[i].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "")
+     }
+    }
+    
+ function selectiongenre3(texte1,texte2){
+   for (var i=0; i< nodesArray.length; i++){
+       if (contains(nodesArray[i].tags, texte1)|contains(nodesArray[i].tags, texte2)){
+         d3.selectAll("#node"+nodesArray[i].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "surbrillance")
+       }
+       else{
+         d3.selectAll("#node"+nodesArray[i].artist.replace(/\./g,"").replace("'","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace(" ","").replace("!","").replace("/","").replace("&","").replace("$","").replace("+",""))
+              .attr("class", "retrait")
+       }
+     }
+   
+ }
+    
+    function affichageTop5(liste, genre){
+    simulation
+     		.force("charge", d3.forceManyBody().distanceMax(150))
+       	.force("center", d3.forceCenter(500,300)) 
+
+    var texte0 = container3.append("text")
+    		.text("Notre top 5  " + genre  + " : ")
+    		.attr('x',750)
+    		.attr('y',30)
+    		.attr("font-size", "30px");
+        
+    for (var i=0; i<5; i++){
+        	for (var j=0; j< nodesArray.length; j++){ 
+               if (liste[i]== nodesArray[j].artist){
+										if (i<3){
+                       var texte1 = container3.append("text")
+                          .text(nodesArray[j].artist)
+                          .attr("x", 775+180*i)
+                          .attr("y",100)
+                          .style("fill", "steelblue")
+                          .style("font-size", "20px");
+
+                       var texte2 = container3.append("text")
+                          .text("Tag : "+nodesArray[j].tags[0] )
+                          .attr("x", 775+180*i)
+                          .attr("y",265)
+                          .style("font-size", "15px");
+
+                       container3.append("svg:image")
+                           .attr('x',775+180*i)
+                           .attr('y',100)
+                           .attr("height",150)
+                           .attr('width',150)
+                           .attr("xlink:href",nodesArray[j].url)
+                    }
+
+                   else{
+
+                       var texte1 = container3.append("text")
+                           .text(nodesArray[j].artist)
+                           .attr("x", 840+220*(i-3))
+                           .attr("y",350)
+                           .style("fill", "steelblue")
+                           .style("font-size", "20px");
+
+                       var texte2 = container3.append("text")
+                           .text("Tag : "+nodesArray[j].tags[0] )
+                           .attr("x", 840+220*(i-3))
+                           .attr("y",515)
+                           .style("font-size", "15px");
+
+                       container3.append("svg:image")
+                           .attr('x',840+220*(i-3))
+                           .attr('y',350)
+                           .attr('height',150)
+                           .attr('width',150)
+                           .attr("xlink:href",nodesArray[j].url)
+                  }
+
+                  break;
+               }
+          }  
+    }
+ }    
+
+    
+    simulation
+      .nodes(nodesArray)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(links);
+ 
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  } 
+    
+  });
+  
+  });
+  
+  function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+  
+var container2Width=document.getElementById("containerLegend").offsetWidth;
+var container1Width=document.getElementById("containerGraphe").offsetWidth;
+var container3Width=document.getElementById("containerZoom").offsetWidth;
+svg.attr("width",container2Width+container1Width+container3Width).attr("height",height)
+
+</script>
